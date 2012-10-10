@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:components="components.*"
+		 width="120" height="23" 
+		 creationComplete="onCreated();">
+	<fx:Script>
+		<![CDATA[
+			import com.greensock.TweenLite;
+			
+			import components.SubMenu;
+			private var submenu:SubMenu;
+			private var setPanel:SettingPanel;
+			
+			private function onFile():void
+			{
+				this.addElement(submenu);
+				submenu.alpha = 0;
+				submenu.y = -71;
+				submenu.x = -1;
+				currentTwnObj = submenu;
+				TweenLite.to(submenu,1,{y:20,alpha:1, onComplete:onShowComplete});
+			}
+			private var referWidth:Number;
+			private var referHeight:Number;
+			private function onSettings():void
+			{
+				this.addElement(setPanel);
+				setPanel.y = - setPanel.height;
+				setPanel.x = setBtn.x;
+				
+				referWidth =  setPanel.width;
+				referHeight = setPanel.height;
+				
+				setPanel.width = 0;
+				setPanel.height = 0;
+				
+				currentTwnObj = setPanel;
+				TweenLite.to(setPanel,1,{y:20,alpha:1, width:referWidth, height:referHeight, onComplete:onShowComplete});
+			}
+			private function onCreated():void
+			{
+				submenu = new SubMenu();
+				setPanel = new SettingPanel();
+			}
+			
+			public function resetSubmenu():void
+			{
+				TweenLite.to(submenu,1,{y:-71,alpha:0, onComplete:onResetComplete});
+			}
+			private var currentTwnObj:DisplayObject;
+			private function onShowComplete():void
+			{
+				TweenLite.killTweensOf(currentTwnObj);
+			}
+			private function onResetComplete():void
+			{
+				this.removeElement(submenu);
+				TweenLite.killTweensOf(submenu);
+			}
+		]]>
+	</fx:Script>
+	<s:Button id="fileBtn" label="文件" click="onFile();"/>
+	<s:Button id="setBtn" x="69" y="0" label="设置" click="onSettings()"/>
+</s:Group>

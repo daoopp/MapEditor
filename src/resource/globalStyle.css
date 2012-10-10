@@ -1,0 +1,8 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+s|Button{
+	outSkin:Embed(source="images/button_0.png");
+	overSkin:Embed(source="images/button_1.png")
+}
+

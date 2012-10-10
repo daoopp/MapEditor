@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   width="400" 
+		   height="300" 
+		   doubleClickEnabled="true" 
+		   creationComplete="onCreate();">
+	<fx:Script>
+		<![CDATA[
+			import manager.MapConfig;
+			import manager.PanelManager;
+			
+			import objects.TileObject;
+			private var _walkable:Boolean = true;
+			private var _tileObject:TileObject;
+			public function set walkable(value:Boolean):void
+			{
+				tileObject.walkable = value;
+				if(value != _walkable)
+				{
+					 _walkable = value;
+					update();
+				}else
+				{
+					_walkable = value;
+				}
+			}
+			private function onCreate():void
+			{
+				if(null == _tileObject)
+					_tileObject = new TileObject();
+				update();
+				this.addEventListener(MouseEvent.DOUBLE_CLICK, onDouble);
+			}
+			private function onDouble(e:MouseEvent):void
+			{
+				PanelManager.showPanel(PanelManager.editTile);
+				PanelManager.editTile.target = this;
+			}
+			private function update():void
+			{
+				this.width = MapConfig.tileWidth;
+				this.height = MapConfig.tileHeight;
+				
+				this.graphics.lineStyle(0,0);
+				this.graphics.beginFill(_walkable ? MapConfig.wakableColor : MapConfig.unwalkableColor, MapConfig.tileAlpha);
+				this.graphics.moveTo(0,0);
+				this.graphics.lineTo(MapConfig.tileWidth >> 1, - MapConfig.tileHeight >> 1);
+				this.graphics.lineTo(MapConfig.tileWidth,0);
+				this.graphics.lineTo(MapConfig.tileWidth >> 1,MapConfig.tileHeight >> 1);
+				this.graphics.lineTo(0,0);
+				this.graphics.endFill();
+			}
+			public function setRowAndCol(row:int,col:int):void
+			{
+				tileObject.row = row;
+				tileObject.col = col;
+			}
+			public function get tileObject():TileObject
+			{
+				if(_tileObject == null)
+					_tileObject = new TileObject();
+				_tileObject.x = this.x;
+				_tileObject.y = this.y;
+				return _tileObject;
+			}
+		]]>
+	</fx:Script>
+</mx:Canvas>

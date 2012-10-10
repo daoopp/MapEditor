@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   width="74" height="92" backgroundAlpha="0.6" backgroundColor="#3E3F40"
+		   contentBackgroundAlpha="1.0" contentBackgroundColor="#F7F9FA" cornerRadius="10">
+	<fx:Script>
+		<![CDATA[
+			import manager.ConfigManager;
+			import manager.FileLoader;
+			import manager.PanelManager;
+			private function onNew():void
+			{
+				PanelManager.showPanel(PanelManager.newMap);
+				PanelManager.sysTool.resetSubmenu();
+			}
+			private function onOpen():void
+			{
+				ConfigManager.instance.openConfig();
+				PanelManager.sysTool.resetSubmenu();
+			}
+			private function onSave():void
+			{
+				ConfigManager.instance.saveConfig(PanelManager.mapContainer.mapConfig);
+				PanelManager.sysTool.resetSubmenu();
+			}
+			private function onImport():void
+			{
+				var fileLoader:FileLoader = FileLoader.getLoader("BG");
+				fileLoader.openImage(getImage);
+				PanelManager.sysTool.resetSubmenu();
+			}
+			private function getImage(image:Bitmap):void
+			{
+				PanelManager.mapContainer.initBackImage(image);
+			}
+		]]>
+	</fx:Script>
+	<s:Button x="2" y="2" label="新建" id="newBtn" click="onNew();"/>
+	<s:Button x="2" y="24" label="打开" id="openBtn" click="onOpen();"/>
+	<s:Button x="2" y="46" label="保存" id="saveBtn" click="onSave();"/>
+	<s:Button x="2" y="68" label="导入背景" id="importBtn" click="onImport();"/>
+</mx:Canvas>

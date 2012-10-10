@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009"
+		   xmlns:s="library://ns.adobe.com/flex/spark"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   width="300" 
+		   height="200" 
+		   backgroundAlpha="0.6" 
+		   backgroundColor="#3E3F40"
+		   cornerRadius="10">
+	<fx:Script>
+		<![CDATA[
+			import manager.ConfigManager;
+			
+			import mx.core.IVisualElementContainer;
+			private function onConfirm():void
+			{
+				var mapName:String = mapNameTxt.text;
+				var mapWidth:Number = Number(mapWidthTxt.text);
+				var mapHeight:Number = Number(mapHeightTxt.text);
+				var tileWidth:Number = Number(tileWidthTxt.text);
+				var tileHeight:Number = Number(tileHeightTxt.text);
+				var xml:XML =  XML(<map />);
+				xml.@name = mapName;
+				xml.@width = mapWidth;
+				xml.@height = mapHeight;
+				xml.@tileWidth = tileWidth;
+				xml.@tileHeight = tileHeight;
+				ConfigManager.instance.newConfig(mapName,xml);
+			}
+			private function onCancel():void
+			{
+				if(this.parent)
+				{
+					(this.parent as IVisualElementContainer).removeElement(this);
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:Label x="36" y="42" text="新地图名"/>
+	<s:Label x="40" y="110" text="格子尺寸"/>
+	<s:Label x="36" y="77" text="地图尺寸"/>
+	<s:TextInput id="mapNameTxt" x="100" y="42"/>
+	<s:TextInput id="mapWidthTxt" x="100" y="73" width="75"/>
+	<s:TextInput id="tileWidthTxt" x="100" y="103" width="75"/>
+	<s:TextInput id="tileHeightTxt" x="194" y="103" width="75"/>
+	<s:TextInput id="mapHeightTxt" x="194" y="73" width="75"/>
+	<s:Button x="72" y="147" label="确定" click="onConfirm();"/>
+	<s:Button x="150" y="147" label="取消" click="onCancel();"/>
+</mx:Canvas>

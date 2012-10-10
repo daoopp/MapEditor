@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   xmlns:views="views.*"
+					   minWidth="1000" 
+					   minHeight="600" 
+					   backgroundAlpha="0.8"
+					   backgroundColor="0x0c0c0c" 
+					   applicationComplete="onCreate()">
+	<fx:Style source="resource/globalStyle.css"/>
+	<fx:Script>
+		<![CDATA[
+			import manager.PanelManager;
+			private function onCreate():void
+			{
+				PanelManager.container = container;
+				PanelManager.sysTool = sysTool;
+				PanelManager.globalHeight = this.stage.stageHeight;
+				PanelManager.globalWidth = this.stage.stageWidth;
+				PanelManager.mapContainer = this.mapContainer;
+				stage.scaleMode = StageScaleMode.NO_SCALE;
+				stage.align = StageAlign.TOP_LEFT;
+			}
+		]]>
+	</fx:Script>
+	<views:MapContainer id="mapContainer"/>
+	<mx:Canvas id="container"/>
+	<views:SysTool id="sysTool" x="10" y="8"/>
+</s:WindowedApplication>

@@ -1,0 +1,7 @@
+<menus>
+	<menu id="file" label="文件">
+		<submenu id="open" label="打开"/>
+	</menu>
+	<menu id="resource" label="素材">
+	</menu>
+<menus>

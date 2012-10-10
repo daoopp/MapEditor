@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   width="400" 
+		   height="300" creationComplete="onCreate();">
+	<fx:Script>
+		<![CDATA[
+			import components.Tile;
+			
+			import manager.MapConfig;
+			import manager.PanelManager;
+			private var _rect:Rectangle;
+			private var _tiles:Dictionary;
+			private function onCreate():void
+			{
+				_tiles = new Dictionary();
+			}
+			private function onDown(e:MouseEvent):void
+			{
+				backImage.startDrag(false,rect);
+				backImage.removeEventListener(MouseEvent.MOUSE_DOWN, onDown);
+				backImage.addEventListener(MouseEvent.MOUSE_UP, onUp);
+			}
+			private function onUp(e:MouseEvent):void
+			{
+				backImage.stopDrag();
+				backImage.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
+				backImage.removeEventListener(MouseEvent.MOUSE_UP, onUp);
+			}
+			public function initMapBack():void
+			{
+				var row:Number = Math.floor(MapConfig.mapWidth/MapConfig.tileWidth);
+				var col:Number = Math.floor(MapConfig.mapHeight/(MapConfig.tileHeight >> 1));
+				if(backImage.source == null || backImage.source == "")
+				{
+					backImage.graphics.beginFill(0xcccccc,0.6);
+					backImage.graphics.drawRect(0,0,MapConfig.mapWidth,MapConfig.mapHeight);
+					backImage.graphics.endFill();
+				}
+				
+				for(var j:int=0; j < col; j++)
+				{
+					for(var i:int = 0; i < row; i++)
+					{
+						var tile:Tile = new Tile();
+						tile.x = i * MapConfig.tileWidth;
+						if(j%2 != 0)
+						{
+							tile.x += (MapConfig.tileWidth >> 1);
+						}
+						tile.y = j * MapConfig.tileHeight >> 1;
+						this.addElement(tile);
+						tile.setRowAndCol(i,j);
+						_tiles[i+"_"+j] = tile;
+					}
+				}
+				backImage.addEventListener(MouseEvent.MOUSE_DOWN, onDown);
+			}
+			public function initBackImage(image:Bitmap):void
+			{
+//				backImage.bitmapData.copyPixels(image.bitmapData, new Rectangle(0,0,image.width,image.height), new Point(0,0));
+				backImage.source = image;
+			}
+
+			public function get rect():Rectangle
+			{
+				if(null == _rect)
+				{
+					_rect = new Rectangle(MapConfig.mapWidth - PanelManager.globalWidth,
+						MapConfig.mapHeight - PanelManager.globalHeight,
+						Math.abs(MapConfig.mapWidth - PanelManager.globalWidth),
+						Math.abs(MapConfig.mapHeight - PanelManager.globalHeight));
+				}
+				return _rect;
+			}
+			public function get mapConfig():XML
+			{
+				var xml:XML = XML("<map />");
+				for(var key:String in _tiles)
+				{
+					if(_tiles[key] is Tile)
+					{
+						xml.appendChild((_tiles[key] as Tile).tileObject.toXMLString());
+					}
+				}
+				return xml;
+			}
+			public function set mapConfig(value:XML):void
+			{
+				var elements:XMLList = value.children();
+				for each(var i:* in elements)
+				{
+					var t_name:String = i.@row+"_"+i.@col;
+					if(_tiles.hasOwnProperty(t_name))
+					{
+						(_tiles[t_name] as Tile).walkable = i.@wakable == "true";
+					}else
+					{
+						var t:Tile = new Tile();
+						t.x = Number(i.@x);
+						t.y = Number(i.@y);
+						t.walkable = i.@walkable == "true";
+						t.tileObject.col = int(i.@col);
+						t.tileObject.row = int(i.@row);
+						t.tileObject.showAlpha = i.@showAlpha == "true";
+						t.setRowAndCol(Number(i.@row),Number(i.@col));
+						_tiles[t_name] = t;
+						this.addElement(t);
+					}
+				}
+			}
+
+		]]>
+	</fx:Script>
+	<s:Image id="backImage"/>
+	<mx:Canvas id="backTiles"/>
+</s:Group>
